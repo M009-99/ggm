@@ -117,9 +117,9 @@ const { handleQuizCommand } = require('./games/quiz.js');
 // Initialize client.games collection for chairs game
 client.games = new Map();
 
-// Setup game interactions
-setupMafiaInteractions(client);
-setupSpyInteractions(client);
+// Setup game interactions - DISABLED to prevent duplicate event listeners
+// setupMafiaInteractions(client);
+// setupSpyInteractions(client);
 
 // Create help command handler
 async function handleHelpCommand(message) {
