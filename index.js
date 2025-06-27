@@ -59,7 +59,7 @@ function loadCountingData() {
   } catch (error) {
     console.error('Error loading counting data:', error);
   }
-  return 0; // Default to 0 if file doesn't exist or error occurs
+  return 0; // Default to 0 if file doesn't exist or error occurs (next expected will be 1)
 }
 
 // Save counting data to file
@@ -162,7 +162,7 @@ async function handleHelpCommand(message) {
       },
       {
         name: '🔢 لعبة العد',
-        value: `في قناة العد المخصصة، اكتب الأرقام بالتسلسل بدءاً من 1\n✅ رقم صحيح | ❌ رقم خاطئ\nالعد يستمر حتى لو أخطأ أحد!`
+        value: `في قناة العد المخصصة، اكتب الأرقام بالتسلسل بدءاً من 1\n✅ رقم صحيح | ❌ رقم خاطئ\nالعد يستمر حتى لو أخطأ أحد!\n\`${config.prefix}ريست-عد\` - إعادة تعيين العداد (للمشرفين)`
       },
       {
         name: '🏆 كيفية كسب النقاط',
@@ -423,6 +423,21 @@ client.on('messageCreate', async message => {
     // Handle points commands
     if (message.content === `${config.prefix}نقاط` || message.content === `${config.prefix}points`) {
       await handlePointsCommand(message);
+      return;
+    }
+
+    // Handle counting reset command (only for allowed roles)
+    if (message.content === `${config.prefix}ريست-عد` || message.content === `${config.prefix}reset-count`) {
+      const member = message.member;
+      const hasPermission = allowedRoleIds.some(roleId => member.roles.cache.has(roleId));
+      if (!hasPermission) {
+        message.reply('❌ **ليس لديك الإذن لإعادة تعيين العداد.**').catch(console.error);
+        return;
+      }
+
+      currentCount = 0;
+      saveCountingData(currentCount);
+      message.reply('🔢 **تم إعادة تعيين العداد! الرقم التالي المطلوب: 1**').catch(console.error);
       return;
     }
 
