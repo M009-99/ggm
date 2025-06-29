@@ -162,7 +162,7 @@ async function handleHelpCommand(message) {
       },
       {
         name: '🔢 لعبة العد',
-        value: `في قناة العد المخصصة، اكتب الأرقام بالتسلسل بدءاً من 1\n✅ رقم صحيح | ❌ رقم خاطئ\nالعد يستمر حتى لو أخطأ أحد!\n\`${config.prefix}ريست-عد\` - إعادة تعيين العداد (للمشرفين)`
+        value: `في قناة العد المخصصة، اكتب الأرقام بالتسلسل بدءاً من 1\n✅ رقم صحيح | ❌ رقم خاطئ\nالعد يستمر حتى لو أخطأ أحد!\n\`${config.prefix}عد\` - عرض الرقم التالي المطلوب\n\`${config.prefix}ريست-عد\` - إعادة تعيين العداد (للمشرفين)`
       },
       {
         name: '🏆 كيفية كسب النقاط',
@@ -378,26 +378,61 @@ async function handleStatusCommand(message) {
 // Counting Game Handler
 async function handleCountingGame(message) {
   try {
-    // Check if the message is only a number (no other text)
+    // Check if the message contains a number
     const messageContent = message.content.trim();
     const number = parseInt(messageContent);
 
-    // If it's not a pure number, ignore it
-    if (isNaN(number) || messageContent !== number.toString()) {
+    // If it's not a number, ignore it
+    if (isNaN(number)) {
       return;
     }
 
-    // Check if it's the correct next number
+    // More flexible number validation - allow numbers with spaces or other characters
+    const extractedNumber = messageContent.match(/\d+/);
+    if (!extractedNumber) {
+      return;
+    }
+
+    const actualNumber = parseInt(extractedNumber[0]);
     const expectedNumber = currentCount + 1;
 
-    if (number === expectedNumber) {
+    console.log(`Counting: User sent "${messageContent}", extracted number: ${actualNumber}, expected: ${expectedNumber}`);
+
+    if (actualNumber === expectedNumber) {
       // Correct number!
-      currentCount = number;
+      currentCount = actualNumber;
       saveCountingData(currentCount); // Save to file
-      await message.react('✅').catch(console.error);
+
+      try {
+        await message.react('✅');
+        console.log(`✅ Correct number ${actualNumber} by ${message.author.username}`);
+      } catch (reactionError) {
+        console.error('Failed to add ✅ reaction:', reactionError);
+        // Try alternative feedback
+        try {
+          await message.reply(`✅ ${actualNumber}`).then(msg => {
+            setTimeout(() => msg.delete().catch(() => {}), 3000);
+          });
+        } catch (replyError) {
+          console.error('Failed to send reply feedback:', replyError);
+        }
+      }
     } else {
       // Wrong number!
-      await message.react('❌').catch(console.error);
+      try {
+        await message.react('❌');
+        console.log(`❌ Wrong number ${actualNumber} by ${message.author.username}, expected ${expectedNumber}`);
+      } catch (reactionError) {
+        console.error('Failed to add ❌ reaction:', reactionError);
+        // Try alternative feedback
+        try {
+          await message.reply(`❌ Expected: ${expectedNumber}`).then(msg => {
+            setTimeout(() => msg.delete().catch(() => {}), 3000);
+          });
+        } catch (replyError) {
+          console.error('Failed to send reply feedback:', replyError);
+        }
+      }
     }
   } catch (error) {
     console.error('Error in counting game:', error);
@@ -438,6 +473,13 @@ client.on('messageCreate', async message => {
       currentCount = 0;
       saveCountingData(currentCount);
       message.reply('🔢 **تم إعادة تعيين العداد! الرقم التالي المطلوب: 1**').catch(console.error);
+      return;
+    }
+
+    // Handle counting status command
+    if (message.content === `${config.prefix}عد` || message.content === `${config.prefix}count`) {
+      const nextNumber = currentCount + 1;
+      message.reply(`🔢 **العداد الحالي: ${currentCount}**\n📍 **الرقم التالي المطلوب: ${nextNumber}**`).catch(console.error);
       return;
     }
 
