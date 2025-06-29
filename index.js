@@ -403,34 +403,75 @@ async function handleCountingGame(message) {
       currentCount = actualNumber;
       saveCountingData(currentCount); // Save to file
 
-      try {
-        await message.react('✅');
-        console.log(`✅ Correct number ${actualNumber} by ${message.author.username}`);
-      } catch (reactionError) {
-        console.error('Failed to add ✅ reaction:', reactionError);
-        // Try alternative feedback
+      // Try to react with retry logic
+      let reactionSuccess = false;
+      for (let attempt = 1; attempt <= 3; attempt++) {
         try {
-          await message.reply(`✅ ${actualNumber}`).then(msg => {
-            setTimeout(() => msg.delete().catch(() => {}), 3000);
-          });
-        } catch (replyError) {
-          console.error('Failed to send reply feedback:', replyError);
+          await message.react('✅');
+          console.log(`✅ Correct number ${actualNumber} by ${message.author.username} (attempt ${attempt})`);
+          reactionSuccess = true;
+          break;
+        } catch (reactionError) {
+          console.error(`Failed to add ✅ reaction (attempt ${attempt}):`, reactionError);
+          if (attempt < 3) {
+            // Wait a bit before retrying
+            await new Promise(resolve => setTimeout(resolve, 500));
+          }
+        }
+      }
+
+      // If all reaction attempts failed, use fallback
+      if (!reactionSuccess) {
+        try {
+          await message.author.send(`✅ **صحيح!** رقم ${actualNumber} في قناة العد`);
+          console.log(`✅ Sent DM feedback for correct number ${actualNumber}`);
+        } catch (dmError) {
+          console.error('Failed to send DM feedback:', dmError);
+          // Last resort: temporary reply that deletes quickly
+          try {
+            await message.reply(`✅ ${actualNumber}`).then(msg => {
+              setTimeout(() => msg.delete().catch(() => {}), 2000);
+            });
+            console.log(`✅ Sent temporary reply for correct number ${actualNumber}`);
+          } catch (replyError) {
+            console.error('All feedback methods failed:', replyError);
+          }
         }
       }
     } else {
       // Wrong number!
-      try {
-        await message.react('❌');
-        console.log(`❌ Wrong number ${actualNumber} by ${message.author.username}, expected ${expectedNumber}`);
-      } catch (reactionError) {
-        console.error('Failed to add ❌ reaction:', reactionError);
-        // Try alternative feedback
+      let reactionSuccess = false;
+      for (let attempt = 1; attempt <= 3; attempt++) {
         try {
-          await message.reply(`❌ Expected: ${expectedNumber}`).then(msg => {
-            setTimeout(() => msg.delete().catch(() => {}), 3000);
-          });
-        } catch (replyError) {
-          console.error('Failed to send reply feedback:', replyError);
+          await message.react('❌');
+          console.log(`❌ Wrong number ${actualNumber} by ${message.author.username}, expected ${expectedNumber} (attempt ${attempt})`);
+          reactionSuccess = true;
+          break;
+        } catch (reactionError) {
+          console.error(`Failed to add ❌ reaction (attempt ${attempt}):`, reactionError);
+          if (attempt < 3) {
+            // Wait a bit before retrying
+            await new Promise(resolve => setTimeout(resolve, 500));
+          }
+        }
+      }
+
+      // If all reaction attempts failed, use fallback
+      if (!reactionSuccess) {
+        try {
+          await message.author.send(`❌ **خطأ!** كتبت ${actualNumber} والمطلوب ${expectedNumber} في قناة العد`);
+          console.log(`❌ Sent DM feedback for wrong number ${actualNumber}`);
+        } catch (dmError) {
+          console.error('Failed to send DM feedback:', dmError);
+          // Last resort: temporary reply that deletes quickly
+          try {
+            await message.reply(`❌ المطلوب: ${expectedNumber}`).then(msg => {
+              setTimeout(() => msg.delete().catch(() => {}), 2000);
+            });
+            console.log(`❌ Sent temporary reply for wrong number ${actualNumber}`);
+          } catch (replyError) {
+            console.error('All feedback methods failed:', replyError);
+          }
         }
       }
     }
