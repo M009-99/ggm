@@ -41,7 +41,7 @@ const KickedPlayers = new Map();
 const AllPlayers = new Map();
 
 // Counting Game Configuration
-const COUNTING_CHANNEL_ID = "1386926777120850053"; // Replace with your channel ID
+const COUNTING_CHANNEL_ID = "1348853802924507166"; // Replace with your channel ID
 const fs = require('fs');
 const path = require('path');
 
