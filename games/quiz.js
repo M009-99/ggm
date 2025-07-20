@@ -193,6 +193,7 @@ function normalizeAnswer(answer) {
 // Start a quiz game
 async function startQuizGame(message, gameType) {
   try {
+    console.log(`🎮 startQuizGame called with gameType: "${gameType}"`);
     // Check permissions
     if (!hasPermission(message.member)) {
       await message.reply('❌ **ليس لديك الإذن لبدء الألعاب.**');
@@ -331,10 +332,17 @@ async function startQuizGame(message, gameType) {
 
 // Handle quiz commands
 async function handleQuizCommand(message, command) {
+  console.log(`🎮 handleQuizCommand called with command: "${command}"`);
   const gameType = command.replace('+', '');
+  console.log(`🎮 Extracted gameType: "${gameType}"`);
+  console.log(`🎮 Available quiz games:`, Object.keys(quizData));
 
   if (quizData[gameType]) {
+    console.log(`✅ Game found! Starting ${gameType} game...`);
     await startQuizGame(message, gameType);
+  } else {
+    console.log(`❌ Game not found! gameType: "${gameType}"`);
+    await message.reply('❌ **هذه اللعبة غير متوفرة حالياً.**');
   }
 }
 

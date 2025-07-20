@@ -618,12 +618,17 @@ client.on('messageCreate', async message => {
 
     // Handle اسرع quiz game command - ENABLED
     if (message.content === `${config.prefix}اسرع`) {
+      console.log(`🎮 اسرع command detected! User: ${message.author.username}, Command: "${message.content}"`);
+
       // Check if user has permission
       const hasPermission = allowedRoleIds.some(roleId => message.member.roles.cache.has(roleId));
       if (!hasPermission) {
+        console.log(`❌ Permission denied for user: ${message.author.username}`);
         message.reply('❌ **ليس لديك الإذن لاستخدام هذا الأمر.**').catch(console.error);
         return;
       }
+
+      console.log(`✅ Permission granted, calling handleQuizCommand with: "${message.content}"`);
       await handleQuizCommand(message, message.content);
       return;
     }
