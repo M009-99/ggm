@@ -240,7 +240,7 @@ async function startQuizGame(message, gameType) {
         })
         .setDescription(`**${randomWord}**\nلديك **10 ثانية** لكتابة الجملة بسرعة`)
         .setFooter({
-          text: 'SOLAY Games',
+          text: 'SH Games',
           iconURL: 'https://cdn.discordapp.com/emojis/1234567890123456789.png' // You can replace with your bot's icon
         });
 
@@ -304,7 +304,7 @@ async function startQuizGame(message, gameType) {
           })
           .setDescription(`**${gameType === 'اسرع' ? randomWord : 'إجابة صحيحة'}**\nلديك **${newPoints}** نقطة لكتابة الجملة بسرعة`)
           .setFooter({
-            text: 'SOLAY Games',
+            text: 'SH Games',
             iconURL: 'https://cdn.discordapp.com/emojis/1234567890123456789.png'
           });
 
@@ -323,7 +323,7 @@ async function startQuizGame(message, gameType) {
           const failureEmbed = new EmbedBuilder()
             .setColor('#FF0000') // Red color for failure
             .setAuthor({
-              name: 'SOLAY Games',
+              name: 'SH Games',
               iconURL: 'https://cdn.discordapp.com/emojis/1234567890123456789.png'
             })
             .setDescription(`❌ لم يتمكن أحد من كتابة الكلمة **(${randomWord})** في الوقت المحدد`);
