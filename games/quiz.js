@@ -318,7 +318,7 @@ async function startQuizGame(message, gameType) {
 
 // Handle quiz commands
 async function handleQuizCommand(message, command) {
-  const gameType = command.replace('-', '');
+  const gameType = command.replace('+', '');
 
   if (quizData[gameType]) {
     await startQuizGame(message, gameType);
