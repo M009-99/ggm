@@ -2,8 +2,8 @@ const { EmbedBuilder } = require('discord.js');
 const { allowedRoleIds } = require('../config.json');
 const { pointsManager } = require('../points.js');
 
-// Game timeout in milliseconds (15 seconds)
-const GAME_TIMEOUT = 15000;
+// Game timeout in milliseconds (10 seconds)
+const GAME_TIMEOUT = 10000;
 
 // Active games tracker
 const activeGames = new Map();
@@ -219,14 +219,14 @@ async function startQuizGame(message, gameType) {
 
       // Send the word to type
       await message.channel.send({
-        content: `🎮 **${gameData.name}**\n📝 اكتب الكلمة التالية بأسرع ما يمكن:\n\n**${randomWord}**\n\n⏰ لديكم 15 ثانية!`
+        content: `🎮 **${gameData.name}**\n📝 اكتب الكلمة التالية بأسرع ما يمكن:\n\n**${randomWord}**\n\n⏰ لديكم 10 ثواني!`
       });
     } else {
       randomQuestion = gameData.questions[Math.floor(Math.random() * gameData.questions.length)];
 
       // Send the image
       await message.channel.send({
-        content: `🎮 **${gameData.name}**\n⏰ لديكم 15 ثانية للإجابة!`,
+        content: `🎮 **${gameData.name}**\n⏰ لديكم 10 ثواني للإجابة!`,
         files: [randomQuestion.image]
       });
     }

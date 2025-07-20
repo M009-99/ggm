@@ -616,9 +616,21 @@ client.on('messageCreate', async message => {
       return;
     }
 
-    // Handle quiz game commands - TEMPORARILY DISABLED (NO RESPONSE)
-    const quizCommands = ['اسرع', 'دين', 'اعلام', 'شخصية', 'ترجم', 'عواصم', 'تمويه', 'رتب', 'براند'];
-    for (const quizCommand of quizCommands) {
+    // Handle اسرع quiz game command - ENABLED
+    if (message.content === `${config.prefix}اسرع`) {
+      // Check if user has permission
+      const hasPermission = allowedRoleIds.some(roleId => message.member.roles.cache.has(roleId));
+      if (!hasPermission) {
+        message.reply('❌ **ليس لديك الإذن لاستخدام هذا الأمر.**').catch(console.error);
+        return;
+      }
+      await handleQuizCommand(message, message.content);
+      return;
+    }
+
+    // Handle other quiz game commands - TEMPORARILY DISABLED (NO RESPONSE)
+    const disabledQuizCommands = ['دين', 'اعلام', 'شخصية', 'ترجم', 'عواصم', 'تمويه', 'رتب', 'براند'];
+    for (const quizCommand of disabledQuizCommands) {
       if (message.content === `${config.prefix}${quizCommand}`) {
         // Command disabled - bot will not respond
         return;
