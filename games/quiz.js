@@ -231,10 +231,20 @@ async function startQuizGame(message, gameType) {
     if (gameType === 'اسرع') {
       randomWord = gameData.words[Math.floor(Math.random() * gameData.words.length)];
 
-      // Send the word to type
-      await message.channel.send({
-        content: `🎮 **${gameData.name}**\n📝 اكتب الكلمة التالية بأسرع ما يمكن:\n\n**${randomWord}**\n\n⏰ لديكم 10 ثواني!`
-      });
+      // Send the word to type with embed
+      const gameEmbed = new EmbedBuilder()
+        .setColor('#00FF00') // Green color like the first image
+        .setAuthor({
+          name: message.author.displayName,
+          iconURL: message.author.displayAvatarURL()
+        })
+        .setDescription(`**${randomWord}**\nلديك **10 ثانية** لكتابة الجملة بسرعة`)
+        .setFooter({
+          text: 'SOLAY Games',
+          iconURL: 'https://cdn.discordapp.com/emojis/1234567890123456789.png' // You can replace with your bot's icon
+        });
+
+      await message.channel.send({ embeds: [gameEmbed] });
     } else {
       randomQuestion = gameData.questions[Math.floor(Math.random() * gameData.questions.length)];
 
@@ -285,15 +295,18 @@ async function startQuizGame(message, gameType) {
         // Award point to winner
         const newPoints = await pointsManager.awardWin(msg.author.id);
 
-        // Announce winner
-        await message.channel.send(`🎉 مبروك <@${msg.author.id}>`);
-
-        // Send success embed
+        // Send success embed matching the style
         const successEmbed = new EmbedBuilder()
-          .setColor('#00FF00')
-          .setTitle('✅ إجابة صحيحة!')
-          .setDescription(`⏱️ الوقت: ${timeTaken} ثانية\n🏆 النقاط الحالية: ${newPoints}`)
-          .setFooter({ text: `${gameData.name}` });
+          .setColor('#00FF00') // Green color for success
+          .setAuthor({
+            name: msg.author.displayName,
+            iconURL: msg.author.displayAvatarURL()
+          })
+          .setDescription(`**${gameType === 'اسرع' ? randomWord : 'إجابة صحيحة'}**\nلديك **${newPoints}** نقطة لكتابة الجملة بسرعة`)
+          .setFooter({
+            text: 'SOLAY Games',
+            iconURL: 'https://cdn.discordapp.com/emojis/1234567890123456789.png'
+          });
 
         await message.channel.send({ embeds: [successEmbed] });
 
@@ -306,10 +319,16 @@ async function startQuizGame(message, gameType) {
     collector.on('end', async (collected, reason) => {
       if (reason !== 'winner') {
         if (gameType === 'اسرع') {
-          // For اسرع game, show the word that should have been typed
-          await message.channel.send(
-            `⏰ انتهى الوقت، لم يفز أحد هذه المرة\n📝 الكلمة المطلوبة كانت: **${randomWord}**`
-          );
+          // For اسرع game, show failure embed with red color
+          const failureEmbed = new EmbedBuilder()
+            .setColor('#FF0000') // Red color for failure
+            .setAuthor({
+              name: 'SOLAY Games',
+              iconURL: 'https://cdn.discordapp.com/emojis/1234567890123456789.png'
+            })
+            .setDescription(`❌ لم يتمكن أحد من كتابة الكلمة **(${randomWord})** في الوقت المحدد`);
+
+          await message.channel.send({ embeds: [failureEmbed] });
         } else {
           // For other games, show correct answers
           const correctAnswersList = randomQuestion.answers.map(answer => `- ${answer}`).join('\n');
