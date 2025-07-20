@@ -207,9 +207,22 @@ async function startQuizGame(message, gameType) {
 
     // Get game data
     const gameData = quizData[gameType];
-    if (!gameData || !gameData.questions || gameData.questions.length === 0) {
+    if (!gameData) {
       await message.reply('❌ **هذه اللعبة غير متوفرة حالياً.**');
       return;
+    }
+
+    // Check if game has valid data (words for اسرع, questions for others)
+    if (gameType === 'اسرع') {
+      if (!gameData.words || gameData.words.length === 0) {
+        await message.reply('❌ **لا توجد كلمات متاحة لهذه اللعبة.**');
+        return;
+      }
+    } else {
+      if (!gameData.questions || gameData.questions.length === 0) {
+        await message.reply('❌ **لا توجد أسئلة متاحة لهذه اللعبة.**');
+        return;
+      }
     }
 
     // Select random word for اسرع game or random question for other games
