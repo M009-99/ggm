@@ -2,7 +2,7 @@
 module.exports = {
   // Bot Configuration
   token: process.env.DISCORD_TOKEN,
-  prefix: "-",
+  prefix: "+",
   // Roles that can use game commands
   allowedRoleIds: [
     "1343402511742009364",
@@ -34,7 +34,7 @@ module.exports = {
     maxPlayers: 60,               // Maximum number of players allowed
     embedColor: "#61607e",        // Color for embeds
     commandName: "كراسي",         // Command name in Arabic
-    commandPrefix: "-"            // Same prefix as other games
+    commandPrefix: "+"            // Same prefix as other games
   },
 
   // Mafia Game Settings
