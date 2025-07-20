@@ -54,26 +54,69 @@ function loadCountingData() {
     if (fs.existsSync(COUNTING_DATA_FILE)) {
       const data = fs.readFileSync(COUNTING_DATA_FILE, 'utf8');
       const parsed = JSON.parse(data);
-      return parsed.currentCount || 0;
+      const count = parsed.currentCount || 0;
+      console.log(`📂 Counting data loaded: ${count} (last updated: ${parsed.lastUpdated || 'unknown'})`);
+      return count;
     }
   } catch (error) {
-    console.error('Error loading counting data:', error);
+    console.error('❌ Error loading counting data:', error);
+
+    // Try to load from backup file
+    const backupFile = COUNTING_DATA_FILE + '.backup';
+    try {
+      if (fs.existsSync(backupFile)) {
+        const backupData = fs.readFileSync(backupFile, 'utf8');
+        const parsed = JSON.parse(backupData);
+        const count = parsed.currentCount || 0;
+        console.log(`📂 Loaded from backup: ${count}`);
+
+        // Try to restore main file from backup
+        fs.writeFileSync(COUNTING_DATA_FILE, backupData);
+        console.log(`✅ Restored main file from backup`);
+
+        return count;
+      }
+    } catch (backupError) {
+      console.error('❌ Error loading backup:', backupError);
+    }
   }
+
+  console.log(`📂 No counting data found, starting from 0`);
   return 0; // Default to 0 if file doesn't exist or error occurs (next expected will be 1)
 }
 
 // Save counting data to file
 function saveCountingData(count) {
   try {
-    const data = { currentCount: count };
+    const data = {
+      currentCount: count,
+      lastUpdated: new Date().toISOString(),
+      timestamp: Date.now()
+    };
     fs.writeFileSync(COUNTING_DATA_FILE, JSON.stringify(data, null, 2));
+    console.log(`💾 Counting data saved: ${count} at ${data.lastUpdated}`);
   } catch (error) {
-    console.error('Error saving counting data:', error);
+    console.error('❌ Error saving counting data:', error);
+    // Try to save to backup file
+    try {
+      const backupFile = COUNTING_DATA_FILE + '.backup';
+      fs.writeFileSync(backupFile, JSON.stringify(data, null, 2));
+      console.log(`💾 Saved to backup file: ${backupFile}`);
+    } catch (backupError) {
+      console.error('❌ Failed to save backup:', backupError);
+    }
   }
 }
 
 // Initialize current count from saved data
 let currentCount = loadCountingData();
+
+// Periodic save function to ensure data persistence
+setInterval(() => {
+  if (currentCount > 0) {
+    saveCountingData(currentCount);
+  }
+}, 60000); // Save every minute as backup
 
 process.on('unhandledRejection', error => {
   console.error('Unhandled promise rejection:', error);
@@ -102,6 +145,8 @@ client.on('ready', async () => {
   console.log('Bot By Wick Studio');
   console.log('discord.gg/wicks');
   console.log(`🔢 Counting game loaded - Current count: ${currentCount}, Next expected: ${currentCount + 1}`);
+  console.log(`📊 Bot will continue counting from where it left off`);
+  console.log(`💾 Counting data will be saved after each correct number and every minute`);
 });
 
 // Load unified configuration
