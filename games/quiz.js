@@ -12,19 +12,31 @@ const activeGames = new Map();
 const quizData = {
   'اسرع': {
     name: 'لعبة الأسرع',
-    questions: [
-      {
-        image: 'https://i.imgur.com/example1.jpg',
-        answers: ['سرعة', 'سريع', 'أسرع', 'speed']
-      },
-      {
-        image: 'https://i.imgur.com/example2.jpg',
-        answers: ['برق', 'ضوء', 'نور', 'lightning']
-      },
-      {
-        image: 'https://i.imgur.com/example3.jpg',
-        answers: ['صاروخ', 'rocket', 'فضاء']
-      }
+    words: [
+      "تفاحة", "برتقال", "موز", "عنب", "كمثرى", "بطيخ", "خوخ", "رمان", "ليمون", "فراولة",
+      "قلم", "مسطرة", "ممحاة", "مبراة", "دفتر", "كتاب", "كرسي", "طاولة", "لوح", "حقيبة",
+      "سيارة", "دراجة", "قطار", "طائرة", "باخرة", "مركبة", "سفينة", "مطار", "ميناء", "شارع",
+      "هاتف", "حاسوب", "لاب توب", "ماوس", "شاشة", "لوحة مفاتيح", "سماعة", "كاميرا", "مايكروفون", "روبوت",
+      "باب", "نافذة", "جدار", "سقف", "مصباح", "شمعة", "ثلاجة", "فرن", "مروحة", "مكيف",
+      "مفتاح", "قفل", "سلسلة", "ساعة", "مرآة", "فرشاة", "معجون", "صابون", "مقص", "مشط",
+      "بيت", "غرفة", "مطبخ", "حمام", "حديقة", "سطح", "قبو", "شرفة", "ممر", "سلم",
+      "مدرسة", "جامعة", "مكتبة", "فصل", "قاعة", "مستشفى", "صيدلية", "عيادة", "مسجد", "كنيسة",
+      "قطة", "كلب", "أسد", "نمر", "ذئب", "ثعلب", "فيل", "زرافة", "حصان", "جمل",
+      "دجاجة", "بطة", "وزة", "نعامة", "بقرة", "خروف", "ماعز", "غزال", "قرد", "نحلة",
+      "سمكة", "حوت", "دولفين", "قرش", "سلحفاة", "تمساح", "ضفدع", "ثعبان", "عقرب", "صرصور",
+      "ملعقة", "شوكة", "سكين", "طبق", "كأس", "إبريق", "غلاية", "طنجرة", "مقلاة", "فرن",
+      "ماء", "عصير", "شاي", "قهوة", "لبن", "حليب", "كولا", "بيبسي", "مشروب", "سكر",
+      "ملح", "فلفل", "كمون", "كركم", "زنجبيل", "قرفة", "خل", "زيت", "زبدة", "جبن",
+      "رغيف", "خبز", "كعك", "بسكويت", "بيتزا", "برغر", "شوربة", "أرز", "معكرونة", "لحم",
+      "دجاج", "سمك", "بيضة", "تمر", "زيتون", "بطاطس", "سلطة", "فول", "حمص", "عدس",
+      "قلب", "عين", "رأس", "أنف", "فم", "يد", "رجل", "أذن", "رقبة", "ظهر",
+      "سعادة", "فرح", "حزن", "غضب", "خوف", "حب", "راحة", "تعب", "ملل", "دهشة",
+      "رياضة", "سباحة", "كرة", "سلة", "قدم", "تنس", "جري", "قفز", "جودو", "ملاكمة",
+      "شمس", "قمر", "سماء", "نجمة", "كوكب", "غيوم", "مطر", "ثلج", "عاصفة", "رعد",
+      "نار", "هواء", "تراب", "ماء", "جبل", "وادي", "نهر", "بحر", "جزيرة", "صحراء",
+      "مدينة", "قرية", "بلد", "سوق", "مقهى", "مطعم", "مخبز", "محطة", "مركز", "منتزه",
+      "مهنة", "طبيب", "معلم", "مهندس", "نجار", "حداد", "سائق", "مزارع", "شرطي", "جندي",
+      "رسام", "كاتب", "مغني", "ممثل", "طباخ", "مذيع", "محامي", "قاضي", "باحث", "عامل"
     ]
   },
   'دين': {
@@ -200,14 +212,24 @@ async function startQuizGame(message, gameType) {
       return;
     }
 
-    // Select random question
-    const randomQuestion = gameData.questions[Math.floor(Math.random() * gameData.questions.length)];
+    // Select random word for اسرع game or random question for other games
+    let randomWord, randomQuestion;
+    if (gameType === 'اسرع') {
+      randomWord = gameData.words[Math.floor(Math.random() * gameData.words.length)];
 
-    // Send the image
-    await message.channel.send({
-      content: `🎮 **${gameData.name}**\n⏰ لديكم 15 ثانية للإجابة!`,
-      files: [randomQuestion.image]
-    });
+      // Send the word to type
+      await message.channel.send({
+        content: `🎮 **${gameData.name}**\n📝 اكتب الكلمة التالية بأسرع ما يمكن:\n\n**${randomWord}**\n\n⏰ لديكم 15 ثانية!`
+      });
+    } else {
+      randomQuestion = gameData.questions[Math.floor(Math.random() * gameData.questions.length)];
+
+      // Send the image
+      await message.channel.send({
+        content: `🎮 **${gameData.name}**\n⏰ لديكم 15 ثانية للإجابة!`,
+        files: [randomQuestion.image]
+      });
+    }
 
     // Track game start time
     const startTime = Date.now();
@@ -216,6 +238,7 @@ async function startQuizGame(message, gameType) {
     activeGames.set(message.channel.id, {
       gameType,
       question: randomQuestion,
+      word: randomWord,
       startTime,
       starterId: message.author.id
     });
@@ -229,10 +252,19 @@ async function startQuizGame(message, gameType) {
 
     collector.on('collect', async (msg) => {
       const userAnswer = normalizeAnswer(msg.content);
-      const correctAnswers = randomQuestion.answers.map(answer => normalizeAnswer(answer));
+      let isCorrect = false;
+
+      if (gameType === 'اسرع') {
+        // For اسرع game, check if user typed the exact word
+        isCorrect = userAnswer === normalizeAnswer(randomWord);
+      } else {
+        // For other games, check against multiple possible answers
+        const correctAnswers = randomQuestion.answers.map(answer => normalizeAnswer(answer));
+        isCorrect = correctAnswers.includes(userAnswer);
+      }
 
       // Check if answer is correct
-      if (correctAnswers.includes(userAnswer)) {
+      if (isCorrect) {
         const endTime = Date.now();
         const timeTaken = ((endTime - startTime) / 1000).toFixed(2);
 
@@ -259,12 +291,18 @@ async function startQuizGame(message, gameType) {
 
     collector.on('end', async (collected, reason) => {
       if (reason !== 'winner') {
-        // No one won - show correct answers
-        const correctAnswersList = randomQuestion.answers.map(answer => `- ${answer}`).join('\n');
-
-        await message.channel.send(
-          `انتهى الوقت، لم يفز أحد هذه المرة\n:الإجابات الصحيحة\n${correctAnswersList}`
-        );
+        if (gameType === 'اسرع') {
+          // For اسرع game, show the word that should have been typed
+          await message.channel.send(
+            `⏰ انتهى الوقت، لم يفز أحد هذه المرة\n📝 الكلمة المطلوبة كانت: **${randomWord}**`
+          );
+        } else {
+          // For other games, show correct answers
+          const correctAnswersList = randomQuestion.answers.map(answer => `- ${answer}`).join('\n');
+          await message.channel.send(
+            `انتهى الوقت، لم يفز أحد هذه المرة\n:الإجابات الصحيحة\n${correctAnswersList}`
+          );
+        }
       }
 
       // Clean up
