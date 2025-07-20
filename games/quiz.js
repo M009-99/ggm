@@ -238,7 +238,7 @@ async function startQuizGame(message, gameType) {
           name: message.author.displayName,
           iconURL: message.author.displayAvatarURL()
         })
-        .setDescription(`**${randomWord}**\nلديك **10 ثانية** لكتابة الجملة بسرعة`)
+        .setDescription(`# ${randomWord}\nلديك **10 ثانية** لكتابة الجملة بسرعة`)
         .setFooter({
           text: 'SH Games',
           iconURL: 'https://cdn.discordapp.com/emojis/1234567890123456789.png' // You can replace with your bot's icon
@@ -302,7 +302,7 @@ async function startQuizGame(message, gameType) {
             name: msg.author.displayName,
             iconURL: msg.author.displayAvatarURL()
           })
-          .setDescription(`**${gameType === 'اسرع' ? randomWord : 'إجابة صحيحة'}**\nلديك **${newPoints}** نقطة لكتابة الجملة بسرعة`)
+          .setDescription(`# ${gameType === 'اسرع' ? randomWord : 'إجابة صحيحة'}\nلديك **${newPoints}** نقطة لكتابة الجملة بسرعة`)
           .setFooter({
             text: 'SH Games',
             iconURL: 'https://cdn.discordapp.com/emojis/1234567890123456789.png'
