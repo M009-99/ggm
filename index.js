@@ -555,9 +555,9 @@ client.on('messageCreate', async message => {
       return;
     }
 
-    // Handle mafia game command - TEMPORARILY DISABLED
+    // Handle mafia game command - TEMPORARILY DISABLED (NO RESPONSE)
     if (message.content === `${config.prefix}${config.mafia.commandName}`) {
-      message.reply('⚠️ **لعبة المافيا معطلة مؤقتاً للصيانة.**').catch(console.error);
+      // Command disabled - bot will not respond
       return;
     }
 
@@ -573,9 +573,9 @@ client.on('messageCreate', async message => {
     //   return;
     // }
 
-    // Handle spy game command - TEMPORARILY DISABLED
+    // Handle spy game command - TEMPORARILY DISABLED (NO RESPONSE)
     if (message.content === `${config.prefix}${config.spy.commandName}`) {
-      message.reply('⚠️ **لعبة الجاسوس معطلة مؤقتاً للصيانة.**').catch(console.error);
+      // Command disabled - bot will not respond
       return;
     }
 
@@ -616,11 +616,11 @@ client.on('messageCreate', async message => {
       return;
     }
 
-    // Handle quiz game commands - TEMPORARILY DISABLED
+    // Handle quiz game commands - TEMPORARILY DISABLED (NO RESPONSE)
     const quizCommands = ['اسرع', 'دين', 'اعلام', 'شخصية', 'ترجم', 'عواصم', 'تمويه', 'رتب', 'براند'];
     for (const quizCommand of quizCommands) {
       if (message.content === `${config.prefix}${quizCommand}`) {
-        message.reply('⚠️ **ألعاب الكويز معطلة مؤقتاً للصيانة.**').catch(console.error);
+        // Command disabled - bot will not respond
         return;
       }
     }
