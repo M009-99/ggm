@@ -569,9 +569,41 @@ client.on('messageCreate', async message => {
         return;
       }
 
+      const oldCount = currentCount;
       currentCount = 0;
       saveCountingData(currentCount);
+      console.log(`🔧 Admin reset count: ${oldCount} → 0 by ${message.author.username}`);
       message.reply('🔢 **تم إعادة تعيين العداد! الرقم التالي المطلوب: 1**').catch(console.error);
+      return;
+    }
+
+    // Handle manual count setting command (only for allowed roles)
+    if (message.content.startsWith(`${config.prefix}تعيين-عد`) || message.content.startsWith(`${config.prefix}set-count`)) {
+      const member = message.member;
+      const hasPermission = allowedRoleIds.some(roleId => member.roles.cache.has(roleId));
+      if (!hasPermission) {
+        message.reply('❌ **ليس لديك الإذن لتعيين العداد.**').catch(console.error);
+        return;
+      }
+
+      // Extract the number from the command
+      const args = message.content.split(' ');
+      if (args.length < 2) {
+        message.reply(`❌ **استخدام خاطئ!**\n✅ **الاستخدام الصحيح:** \`${config.prefix}تعيين-عد [رقم]\`\n📝 **مثال:** \`${config.prefix}تعيين-عد 1060\``).catch(console.error);
+        return;
+      }
+
+      const newCount = parseInt(args[1]);
+      if (isNaN(newCount) || newCount < 0) {
+        message.reply('❌ **يجب أن يكون الرقم صحيحاً وأكبر من أو يساوي 0!**').catch(console.error);
+        return;
+      }
+
+      const oldCount = currentCount;
+      currentCount = newCount;
+      saveCountingData(currentCount);
+      console.log(`🔧 Admin set count: ${oldCount} → ${newCount} by ${message.author.username}`);
+      message.reply(`🔢 **تم تعيين العداد إلى: ${newCount}**\n📍 **الرقم التالي المطلوب: ${newCount + 1}**\n💾 **تم الحفظ بنجاح!**`).catch(console.error);
       return;
     }
 
