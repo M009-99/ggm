@@ -114,9 +114,17 @@ let currentCount = loadCountingData();
 // Periodic save function to ensure data persistence
 setInterval(() => {
   if (currentCount > 0) {
+    console.log(`⏰ Periodic save: ${currentCount}`);
     saveCountingData(currentCount);
   }
-}, 60000); // Save every minute as backup
+}, 30000); // Save every 30 seconds as backup
+
+// Force save function for manual saves
+function forceSaveCount() {
+  console.log(`🔧 Force saving current count: ${currentCount}`);
+  saveCountingData(currentCount);
+  return currentCount;
+}
 
 process.on('unhandledRejection', error => {
   console.error('Unhandled promise rejection:', error);
@@ -445,8 +453,13 @@ async function handleCountingGame(message) {
 
     if (actualNumber === expectedNumber) {
       // Correct number!
+      const previousCount = currentCount;
       currentCount = actualNumber;
-      saveCountingData(currentCount); // Save to file
+      console.log(`🔢 Count updated: ${previousCount} → ${currentCount} by ${message.author.username}`);
+
+      // Save immediately after updating
+      saveCountingData(currentCount);
+      console.log(`💾 Count saved to file: ${currentCount}`);
 
       // Try to react with retry logic
       let reactionSuccess = false;
@@ -565,7 +578,9 @@ client.on('messageCreate', async message => {
     // Handle counting status command
     if (message.content === `${config.prefix}عد` || message.content === `${config.prefix}count`) {
       const nextNumber = currentCount + 1;
-      message.reply(`🔢 **العداد الحالي: ${currentCount}**\n📍 **الرقم التالي المطلوب: ${nextNumber}**`).catch(console.error);
+      // Force save current count when checking status
+      forceSaveCount();
+      message.reply(`🔢 **العداد الحالي: ${currentCount}**\n📍 **الرقم التالي المطلوب: ${nextNumber}**\n💾 **تم حفظ العداد**`).catch(console.error);
       return;
     }
 
