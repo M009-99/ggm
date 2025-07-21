@@ -241,7 +241,7 @@ async function startQuizGame(message, gameType) {
         .setDescription(`# ${randomWord}\nلديك **10 ثانية** لكتابة الجملة بسرعة`)
         .setFooter({
           text: 'SH Games',
-          iconURL: 'https://cdn.discordapp.com/emojis/1234567890123456789.png' // You can replace with your bot's icon
+          iconURL: 'https://cdn.discordapp.com/attachments/1372626105839915038/1396642152439877784/a_afc91405fdc3ba5a738bf5ef72ed7ca9.gif?ex=687ed3dd&is=687d825d&hm=814622da86eb0beaf0d4c04ab4c35c33cec516f514a30107a7958be7fe6f61bc&' // You can replace with your bot's icon
         });
 
       await message.channel.send({ embeds: [gameEmbed] });
@@ -305,7 +305,7 @@ async function startQuizGame(message, gameType) {
           .setDescription(`# ${gameType === 'اسرع' ? randomWord : 'إجابة صحيحة'}\nلديك **${newPoints}** نقطة لكتابة الجملة بسرعة`)
           .setFooter({
             text: 'SH Games',
-            iconURL: 'https://cdn.discordapp.com/emojis/1234567890123456789.png'
+            iconURL: 'https://cdn.discordapp.com/attachments/1372626105839915038/1396642152439877784/a_afc91405fdc3ba5a738bf5ef72ed7ca9.gif?ex=687ed3dd&is=687d825d&hm=814622da86eb0beaf0d4c04ab4c35c33cec516f514a30107a7958be7fe6f61bc&'
           });
 
         await message.channel.send({ embeds: [successEmbed] });
@@ -324,7 +324,7 @@ async function startQuizGame(message, gameType) {
             .setColor('#FF0000') // Red color for failure
             .setAuthor({
               name: 'SH Games',
-              iconURL: 'https://cdn.discordapp.com/emojis/1234567890123456789.png'
+              iconURL: 'https://cdn.discordapp.com/attachments/1372626105839915038/1396642152439877784/a_afc91405fdc3ba5a738bf5ef72ed7ca9.gif?ex=687ed3dd&is=687d825d&hm=814622da86eb0beaf0d4c04ab4c35c33cec516f514a30107a7958be7fe6f61bc&'
             })
             .setDescription(`❌ لم يتمكن أحد من كتابة الكلمة **(${randomWord})** في الوقت المحدد`);
 
